@@ -21,22 +21,22 @@ const openStyle = {
 export default class Cell extends React.Component {
   constructor(props) {
     super(props)
-    this._handleClick = this._handleClick.bind(this)
-    this._handleDoubleClick = this._handleDoubleClick.bind(this)
-    this._handleRightClick = this._handleRightClick.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.handleDoubleClick = this.handleDoubleClick.bind(this)
+    this.handleRightClick = this.handleRightClick.bind(this)
   }
 
-  _handleClick(event) {
+  handleClick(event) {
     event.preventDefault()
     this.props.onClick(this.props.x, this.props.y)
   }
 
-  _handleDoubleClick(e) {
+  handleDoubleClick(e) {
     e.preventDefault()
     this.props.onDoubleClick(this.props.x, this.props.y)
   }
 
-  _handleRightClick(e) {
+  handleRightClick(e) {
     e.preventDefault()
     this.props.onRightClick(this.props.x, this.props.y)
   }
@@ -97,9 +97,9 @@ export default class Cell extends React.Component {
       <div
         className="cell"
         style={style}
-        onClick={this._handleClick}
-        onDoubleClick={this._handleDoubleClick}
-        onContextMenu={this._handleRightClick}
+        onClick={this.handleClick}
+        onDoubleClick={this.handleDoubleClick}
+        onContextMenu={this.handleRightClick}
       >
         {content}
       </div>

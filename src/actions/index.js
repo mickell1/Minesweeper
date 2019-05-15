@@ -1,6 +1,6 @@
 import {
   TOGGLE_FLAG,
-  INIT,
+  START,
   CHANGE_DIFFICULTY,
   GAMEOVER,
   CLEAR
@@ -13,8 +13,8 @@ export const toggle = (flagged) => {
   }
 }
 
-export const init = () => {
-  return { type: INIT }
+export const start = () => {
+  return { type: START }
 }
 
 export const changeDifficulty = (difficulty) => {

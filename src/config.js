@@ -23,7 +23,7 @@ const config = {
     bombNum: 256,
     cellSize: 28
   },
-  maniac: {
+  insane: {
     boardWidth: 68,
     boardHeight: 48,
     bombNum: 777,

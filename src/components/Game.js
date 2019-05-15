@@ -3,22 +3,22 @@ import { connect } from 'react-redux'
 import { GiClusterBomb } from 'react-icons/gi'
 import Board from './Board'
 import config from '../config'
-import { toggle, init, changeDifficulty, gameover, clear } from '../actions'
+import { toggle, start, changeDifficulty, gameover, clear } from '../actions'
 import '../styles/game.css'
 
 class Game extends Component {
   constructor(props) {
     super(props)
     const { difficulty } = this.props
-    this.state = { board: this._initBoard(difficulty) }
+    this.state = { board: this.buildBoard(difficulty) }
     this.handleClick = this.handleClick.bind(this)
     this.handleClickCell = this.handleClickCell.bind(this)
     this.handleRightClickCell = this.handleRightClickCell.bind(this)
     this.handleDoubleClickCell = this.handleDoubleClickCell.bind(this)
   }
 
-  _initBoard(difficulty) {
-    const bombPlaces = this._initBombPlaces(difficulty)
+  buildBoard(difficulty) {
+    const bombPlaces = this.BombPlaces(difficulty)
     const { boardWidth, boardHeight } = config[difficulty]
     const board = Array.from(
       new Array(boardWidth), () => new Array(boardHeight).fill(
@@ -31,7 +31,7 @@ class Game extends Component {
     return board
   }
 
-  _initBombPlaces(difficulty) {
+  BombPlaces(difficulty) {
     const bombPlaces = []
     const { boardWidth, boardHeight, bombNum } = config[difficulty]
     while (bombPlaces.length < bombNum) {
@@ -54,8 +54,8 @@ class Game extends Component {
   handleClick(e) {
     e.preventDefault()
     const { difficulty } = this.props
-    this.props.dispatch(init())
-    this.setState({ board: this._initBoard(difficulty) })
+    this.props.dispatch(start())
+    this.setState({ board: this.buildBoard(difficulty) })
   }
 
   handleClickCell(x, y) {
@@ -63,7 +63,7 @@ class Game extends Component {
     if (gameover || clear) {
       return
     }
-    this._open(x, y)
+    this.open(x, y)
   }
 
   handleRightClickCell(x, y) {
@@ -71,7 +71,7 @@ class Game extends Component {
     if (gameover || clear) {
       return
     }
-    this._toggleFlag(x, y)
+    this.toggleFlag(x, y)
   }
 
   handleDoubleClickCell(x, y) {
@@ -93,7 +93,7 @@ class Game extends Component {
             (board[i][j].flagged)) {
           continue
         }
-        this._open(i, j)
+        this.open(i, j)
       }
     }
   }
@@ -101,10 +101,10 @@ class Game extends Component {
   changeDifficulty(e) {
     const difficulty = e.target.value
     this.props.dispatch(changeDifficulty(difficulty))
-    this.setState({ board: this._initBoard(difficulty) })
+    this.setState({ board: this.buildBoard(difficulty) })
   }
 
-  _open(x, y) {
+  open(x, y) {
     const board = [].concat(this.state.board)
     const { boardWidth, boardHeight } = config[this.props.difficulty]
     if (!board[x][y].open) {
@@ -124,12 +124,12 @@ class Game extends Component {
       board[x][y] = Object.assign({}, board[x][y], { open: true, bombCount: bombCount })
       this.setState({ board })
       if (board[x][y].flagged) {
-        this._toggleFlag(x, y)
+        this.toggleFlag(x, y)
       }
       if (board[x][y].bomb) {
         this.props.dispatch(gameover())
       }
-      if (this._isClear(board)) {
+      if (this.isClear(board)) {
         this.props.dispatch(clear())
       }
 
@@ -142,14 +142,14 @@ class Game extends Component {
                 (board[i][j].flagged)) {
               continue
             }
-            this._open(i, j)
+            this.open(i, j)
           }
         }
       }
     }
   }
 
-  _isClear(board) {
+  isClear(board) {
     let openCount = 0
     const { difficulty } = this.props
     const { boardWidth, boardHeight, bombNum } = config[difficulty]
@@ -163,7 +163,7 @@ class Game extends Component {
     return openCount === (boardWidth * boardHeight - bombNum)
   }
 
-  _toggleFlag(x, y) {
+  toggleFlag(x, y) {
     const board = [].concat(this.state.board)
     const { flagged } = board[x][y]
     board[x][y] = Object.assign({}, board[x][y], { flagged: !flagged })
@@ -186,15 +186,16 @@ class Game extends Component {
       <div id="game" style={{ width: boardWidthPx }}>
         <h1>Minesweeper</h1>
         <div id="menu">
-          <button onClick={this.handleClick} id="restart">Restart</button>
+          <span>Difficulty: </span>
           <select value={difficulty} onChange={(e) => this.changeDifficulty(e)} style={{ marginRight: 5 }}>
             <option value={'easy'} key={'easy'}>Easy</option>
             <option value={'normal'} key={'normal'}>Normal</option>
             <option value={'hard'} key={'hard'}>Hard</option>
             <option value={'veryHard'} key={'veryHard'}>Very Hard</option>
-            <option value={'maniac'} key={'maniac'}>Maniac</option>
-          </select>
-          <span id="bomb"><GiClusterBomb style={{ marginTop: -3 }} /> {bomb}</span>
+            <option value={'insane'} key={'insane'}>Insane</option>
+          </select><br />
+          <span id="bomb"><GiClusterBomb id='bomblayout' /> {bomb}</span><br />
+          <button onClick={this.handleClick} id="restart">Restart</button>
           {status}
         </div>
         <Board
@@ -204,19 +205,18 @@ class Game extends Component {
           onRightClick={this.handleRightClickCell}
           onDoubleClick={this.handleDoubleClickCell}
         />
-        <div>
+        <div className="instructions">
           <p>
-            <span style={{ fontWeight: 'bold' }}>HOW TO PLAY</span><br />
-            <span style={{ fontSize: 14 }}>Click: Open a cell.</span><br />
-            <span style={{ fontSize: 14 }}>Right Click: Toggle a flag.</span><br />
-            <span style={{ fontSize: 14 }}>Double Click: Open cells around open cell except flagged at once. Only enable for open cell.</span>
+            <span className="boldFont">Game Instructions</span><br />
+            <span>Click on a cell and it will open.</span><br />
+            <span>Right click to toggle a flag.</span><br />
+            <span>Double click to open cells around the board.</span>
           </p>
           <hr />
-          <p style={{ textAlign: 'right' }}>
+          <p className='githublink'>
             <a href="https://github.com/mickell1">Mickell Crawford</a>
             <br />
-            <span>View </span>
-            <a href="https://github.com/mickell1/Minesweeper">Code</a>
+            <a href="https://github.com/mickell1/Minesweeper"> View Code</a>
           </p>
         </div>
       </div>

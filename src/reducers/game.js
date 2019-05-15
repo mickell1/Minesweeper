@@ -1,6 +1,6 @@
 import {
   TOGGLE_FLAG,
-  INIT,
+  START,
   CHANGE_DIFFICULTY,
   GAMEOVER,
   CLEAR
@@ -26,7 +26,7 @@ const game = (state = initialState, action) => {
       }
       return Object.assign({}, state, { bomb })
     }
-    case INIT: {
+    case START: {
       return {
         gameover: false,
         clear: false,

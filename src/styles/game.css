@@ -3,13 +3,17 @@
   width: 320px;
 }
 #menu {
-  clear: both;
-  height: 33px;
-  line-height: 33px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  background: #19a0d9;
+  padding: 7px;
+  text-align: center;
+  color: #fff;
+  min-height: 100px;
+  border-radius: 7px;
+  display: block;
+  margin-top: 15px;
 }
 #restart {
-  float: right;
   padding: 8px 15px;
   background-color: gray;
   border: none;
@@ -37,4 +41,20 @@
 }
 #clear {
   color: green;
+}
+
+#bomblayout {
+  margin-top: -3;
+}
+
+.instructions {
+  font-weight: 14px;
+}
+
+.githublink {
+  text-align: center;
+}
+
+.boldFont {
+  font-weight: bold;
 }
